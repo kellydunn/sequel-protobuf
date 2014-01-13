@@ -2,20 +2,30 @@ require 'sequel/plugins/protobuf/drivers'
 
 module Sequel
   module Plugins
+
+    # This module defines the Protobuf plugin for the Sequel database library
     module Protobuf
+
+      # This error message indicates that a {Sequel::Model} definition
+      # that has been required by the client is missing a protobuf model definition.
       class MissingProtobufDefinitionError < StandardError
+
+        # Creates a new instance of {Sequel::Plugins::Protobuf::MissingProtobufDefinitionError}
         def initialize
           super("Protobuf model definition was not specified.")
         end
       end
 
-      # TODO Find a cleaner way of registering drivers, but for now
-      #      We will support `ruby_protocol_buffers`
+      # This constant lists all of the current compatible drivers in sequel-protobuf
       DRIVERS = {
         :ruby_protocol_buffers => Sequel::Plugins::Protobuf::Drivers::RubyProtocolBuffers
       }
 
+      # This constant defines the default driver for sequel-protobuf
+      # If clients do not specify a driver, sequel-protobuf assumes they 
+      # will use this gem.
       DEFAULT_DRIVER = :ruby_protocol_buffers
+      
       
       def self.apply(model, options={})
         # TODO no-op
@@ -43,6 +53,11 @@ module Sequel
       module ClassMethods
         attr_reader :protobuf_driver, :protobuf_model
 
+        # Creates and returns a new instance of the current class
+        # from the passed in protobuf message
+        #
+        # @param protobuf {String}. The protobuf message to parse.
+        # @param options {Hash}. An options hash that will configure the parsing.
         def from_protobuf(protobuf, options = {})
           pb_model = @protobuf_driver.parse(@protobuf_model, protobuf, options)
 
