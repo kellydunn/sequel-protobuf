@@ -39,4 +39,15 @@ class ProtobufTest < Minitest::Test
     assert_equal m.class, MyMessageSequelModel
   end
 
+  def test_dataset_to_protobuf
+    require 'test/helpers/my_message_sequel_model'
+
+    m = MyMessageSequelModel.create({:myField => "test"})
+    collection = MyMessageSequelModel.where(:myField => "test")
+
+    res = collection.to_protobuf
+
+    assert_equal(res.length, 1)
+    assert_equal(res[0], "\b\x01\x12\x04test")    
+  end
 end

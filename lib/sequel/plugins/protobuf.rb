@@ -67,24 +67,15 @@ module Sequel
       module DatasetMethods
         def to_protobuf(options = {})
 
-          if options[:array]
-            collection = options.delete(:array)
-
-            res = collection.inject([]) do |acc, obj|
-              acc << obj.to_protobuf(options)
-              acc
-            end
-
-            return res
-
-          elsif options[:root]
-            obj = options.delete(:root)
-            return obj.to_protobuf(options)
-
+          res = self.all.inject([]) do |acc, obj|
+            acc << obj.to_protobuf(options)
+            acc
           end
+          
+          return res
+          
         end
       end
-
     end
   end
 end

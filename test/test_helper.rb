@@ -10,8 +10,7 @@ require 'minitest/autorun'
 require 'mocha/setup'
 require 'sequel'
 
-Sequel.mock(:fetch => [{:id => 1, :myField => "test"}],
-            :columns => [:id, :myField])
+Sequel.mock(:fetch => [{:id => 1, :myField => "test"}], :columns => [:id, :myField])
 
 # Require all protobuf definitions
 Dir["**/*.pb.rb"].each do |f|
