@@ -18,19 +18,19 @@ A plugin library for the `sequel` gem that enables `Sequel::Model` classes to be
 
 ##usage
 
-Require the gem through `bundler`:
+There is an intent to have this gem available through rubygems eventually, but for now, it's easiest to require the gem through `bundler`:
 
 ```
 gem 'sequel-protobuf', :git => "git@github.com/kellydunn/sequel-protobuf"
 ```
 
-Then, in your model definitions file, require `sequel`, `sequel-protobuf`, a protocol buffer utility library of your choice, and a `.pb.rb` definition of your protocol buffer model.  After that, just specify that you want your `Sequel::Model` class to use the `protobuf` plugin with a specific protobuf model definition, like so:
+Then, in your `Sequel::Model` definition, require `sequel`, `sequel-protobuf`, a protocol buffer utility library of your choice, and the corresponding protocol buffer model definition (the `.pb.rb` file that `ruby-protoc` generates).  Next, specify that you want your `Sequel::Model` class to use the `protobuf` plugin along with the class name of the protobuf model definition, like so:
 
 ```
 require 'sequel'
 require 'sequel/plugins/protobuf'
 require 'ruby-protocol-buffers'
-require 'your/protocol/buffer/definition'
+require 'your/protocol/buffer/definitions/my_model_definition'
 
 class MyModel < Sequel::Model
   plugin :protobuf, :model => MyModelDefinition
