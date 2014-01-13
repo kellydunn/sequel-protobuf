@@ -14,17 +14,20 @@
 
 ##what 
 
-A plugin library for the `sequel` gem that enables `Sequel::Model` classes to be serialized into protocol buffers.
+A plugin for the `sequel` database library that enables `Sequel::Model` classes to be serialized into protocol buffers.
 
-##usage
+##installation
 
-There is an intent to have this gem available through rubygems eventually, but for now, it's easiest to require the gem through `bundler`:
+There is an intent to have this gem available through rubygems eventually, but for now, it's easiest to require the gem through `bundler` by specifying it in your `Gemfile`:
 
+*Gemfile*
 ```
 gem 'sequel-protobuf', :git => "git@github.com/kellydunn/sequel-protobuf"
 ```
 
-Then, in your `Sequel::Model` definition, require `sequel`, `sequel-protobuf`, a protocol buffer utility library of your choice, and the corresponding protocol buffer model definition (the `.pb.rb` file that `ruby-protoc` generates).  Next, specify that you want your `Sequel::Model` class to use the `protobuf` plugin along with the class name of the protobuf model definition, like so:
+##usage
+
+In your `Sequel::Model` definition, require `sequel`, `sequel-protobuf`, a protocol buffer utility library of your choice (like `ruby-protocol-buffers`), and the corresponding protocol buffer model definition (the `.pb.rb` file that `ruby-protoc` generates).  Next, specify that you want your `Sequel::Model` class to use the `protobuf` plugin along with the class name of the protobuf model definition, like so:
 
 ```
 require 'sequel'
@@ -52,8 +55,8 @@ result = MyModel.all.to_protobuf
 
 ##considerations
 
-  - This library currently only supports `ruby-protocol-buffers` as a serialization driver.  If there is interest, other gems might be considered for integration!  If you are interested in adding additional driver support, feel free to open a Pull Request!
+  - This library currently only supports `ruby-protocol-buffers` as a serialization driver.  If you are interested in adding additional driver support, feel free to open a Pull Request!
 
 ##roadmap
 
-  - Nested Dataset serialization
+  - Serialization of nested models
