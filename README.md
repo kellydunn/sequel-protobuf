@@ -5,6 +5,10 @@
 
 A plugin for the `sequel` database library that enables `Sequel::Model` classes to be serialized into protocol buffers.
 
+##documentation
+
+Documentation can be found [here](http://rubydoc.info/github/kellydunn/sequel-protobuf/master/frames).
+
 ##installation
 
 There is an intent to have this gem available through rubygems eventually, but for now, it's easiest to require the gem through `bundler` by specifying it in your `Gemfile`:
