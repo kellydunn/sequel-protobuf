@@ -74,12 +74,27 @@ module Sequel
       end
 
       module InstanceMethods
+        # Renders the current instance of the model to a protocol buffer message
+        # as it is defined in the configured protocol buffer model definition.
+        #
+        # @param options {Hash}. An options hash that is used to configure how 
+        #                        the rendering is performed.
+        # @return {String}. A protocol buffer representation of the current {Sequel::Model} instance.
         def to_protobuf(options = {})
           self.class.protobuf_driver.serialize(self.class.protobuf_model, self, options)
         end
       end
 
       module DatasetMethods
+        # Renders the current dataset of the model into a collection of 
+        # protocol buffer messages as they are defined in the configured
+        # protocol buffer model definition.
+        #
+        # @param options {Hash}.  An options hash that is used to configure how
+        #                         the rendering is preformed.
+        # @return {Array}.  An array of protocol buffer messages.  Each element
+        #                   In the array is a serialized version of the corresponding
+        #                   object in the original dataset.
         def to_protobuf(options = {})
 
           res = self.all.inject([]) do |acc, obj|
