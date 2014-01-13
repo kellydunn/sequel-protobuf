@@ -8,6 +8,7 @@ group :development, :test do
   gem 'simplecov'
   gem 'mocha'
   gem 'yard'
+  gem 'redcarpet'
 
   gem 'ruby-protocol-buffers'
 end
