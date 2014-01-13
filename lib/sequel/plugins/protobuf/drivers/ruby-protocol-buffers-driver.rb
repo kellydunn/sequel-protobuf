@@ -1,6 +1,8 @@
 module Sequel
   module Plugins
     module Protobuf
+      
+      # This module contains all the driver definitions for the sequel-protobuf gem.
       module Drivers
         
         # This driver definition provides a standard interface

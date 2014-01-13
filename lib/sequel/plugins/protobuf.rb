@@ -1,6 +1,9 @@
 require 'sequel/plugins/protobuf/drivers'
 
+# This module contains all functionality for the Sequel library.
 module Sequel
+  
+  # This module contains all Sequel plugin definitions.
   module Plugins
 
     # This module defines the Protobuf plugin for the Sequel database library
@@ -26,7 +29,10 @@ module Sequel
       # will use this gem.
       DEFAULT_DRIVER = :ruby_protocol_buffers
       
-      
+      # Initializes the sequel-protobuf the first time it is registered for a class.
+      #
+      # @param model {Sequel::Model}. The {Sequel::Model} in which to register the plugin.
+      # @param options {Hash}. A configuration hash that is used to help configure the application.
       def self.apply(model, options={})
         # TODO no-op
       end
