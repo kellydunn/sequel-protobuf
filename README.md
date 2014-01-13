@@ -10,6 +10,7 @@
                       \/_/                               \/_/                                                 
 
 ```
+[![Build Status](https://drone.io/github.com/kellydunn/sequel-protobuf/status.png)](https://drone.io/github.com/kellydunn/sequel-protobuf/latest)
 
 ##what 
 
