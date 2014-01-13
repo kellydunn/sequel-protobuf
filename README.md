@@ -53,3 +53,6 @@ result = MyModel.all.to_protobuf
 ##roadmap
 
   - Serialization of nested models
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/kellydunn/sequel-protobuf/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
