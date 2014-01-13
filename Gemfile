@@ -7,6 +7,7 @@ group :development, :test do
   gem 'minitest'
   gem 'simplecov'
   gem 'mocha'
+  gem 'yard'
 
   gem 'ruby-protocol-buffers'
 end
