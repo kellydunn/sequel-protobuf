@@ -1,0 +1,6 @@
+package Test;
+
+message MyMessage {
+  required int64 id = 1;
+  optional string myField = 2;
+}
