@@ -9,7 +9,7 @@ A plugin for the `sequel` database library that enables `Sequel::Model` classes 
 
 There is an intent to have this gem available through rubygems eventually, but for now, it's easiest to require the gem through `bundler` by specifying it in your `Gemfile`:
 
-*Gemfile*
+**Gemfile**
 ```
 gem 'sequel-protobuf', :git => "git@github.com/kellydunn/sequel-protobuf"
 ```
