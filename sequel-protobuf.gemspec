@@ -1,4 +1,4 @@
-require File.expand_path("../lib/sequel-protobuf/version.rb", __FILE__)
+require File.expand_path("../lib/sequel/plugins/protobuf/version.rb", __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = ["kellydunn"]
@@ -12,5 +12,5 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = 'sequel-protobuf'
   gem.require_paths = ['lib']
-  gem.version       = SequelProtobuf::VERISON
+  gem.version       = Sequel::Plugins::Protobuf::VERISON
 end
