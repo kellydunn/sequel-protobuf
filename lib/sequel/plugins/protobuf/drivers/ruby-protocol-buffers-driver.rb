@@ -36,8 +36,6 @@ module Sequel
               !fields.include?(item)
             end
 
-            puts attributes
-
             return protobuf_model.send(:new, attributes).to_s
           end
 
