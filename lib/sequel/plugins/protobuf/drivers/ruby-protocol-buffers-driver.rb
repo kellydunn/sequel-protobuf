@@ -26,6 +26,18 @@ module Sequel
           # @param attributes {Hash}.  The attributes in which to be serialized into a protocol buffer message
           # @param options {Hash}.  An options hash to help configure the serialization funcitonality.
           def self.serialize(protobuf_model, attributes, options = {})
+
+             fields = protobuf_model.fields.inject([]) do |acc, (k, v)| 
+               acc << v.name
+              acc
+            end
+
+            attributes.reject! do |item| 
+              !fields.include?(item)
+            end
+
+            puts attributes
+
             return protobuf_model.send(:new, attributes).to_s
           end
 

@@ -87,7 +87,7 @@ module Sequel
         #                        the rendering is performed.
         # @return {String}. A protocol buffer representation of the current {Sequel::Model} instance.
         def to_protobuf(options = {})
-          self.class.protobuf_driver.serialize(self.class.protobuf_model, self, options)
+          self.class.protobuf_driver.serialize(self.class.protobuf_model, self.values, options)
         end
       end
 
