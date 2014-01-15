@@ -21,4 +21,35 @@ class RubyProtocolBuffersDriverTest < Minitest::Test
     assert_equal(res2.myField, "test")
   end
 
+  # Ensures that passing an attributes hash that is mismatched with the 
+  # Protobuf definition will be coerced into an acceptable attributes hash 
+  # such that it can be serialized as defined
+  def test_serialize_with_mismatched_attributes
+    e = nil
+    begin
+      d = Sequel::Plugins::Protobuf::DRIVERS[:ruby_protocol_buffers]
+      res = d.serialize(::Test::MyMessage, {:id => 1, :myField => "test", :garbage => "garbage_data"})
+      assert_equal("\b\x01\x12\x04test", res)
+    rescue ::Exception => e
+      # No-op
+    end
+
+    assert e.nil?, "We should not encounter an error when attempting to serialize a model with mismatched attributes"
+  end
+
+  # Ensures that we do encounter an error when an insufficent attributes hash
+  # Is passed to a call to serialization
+  def test_serialize_with_mismatched_attributes_error
+    e = nil
+    begin
+      d = Sequel::Plugins::Protobuf::DRIVERS[:ruby_protocol_buffers]
+      res = d.serialize(::Test::MyMessage, {})
+    rescue ::Exception => e
+      # No-op
+    end
+
+    assert !e.nil?, "We should encounter an error when attempting to serialize a model with insufficient attributes"
+    assert_equal e.class, ::ProtocolBuffers::EncodeError
+  end
+
 end
