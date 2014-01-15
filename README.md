@@ -25,7 +25,7 @@ In your `Sequel::Model` definition, require `sequel`, `sequel-protobuf`, a proto
 ```
 require 'sequel'
 require 'sequel/plugins/protobuf'
-require 'ruby-protocol-buffers'
+require 'protocol_buffers'
 require 'your/protocol/buffer/definitions/my_model_definition'
 
 class MyModel < Sequel::Model
