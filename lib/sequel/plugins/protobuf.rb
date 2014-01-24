@@ -89,6 +89,15 @@ module Sequel
         def to_protobuf(options = {})
           self.class.protobuf_driver.serialize(self.class.protobuf_model, self.values, options)
         end
+
+        # Renders the current instance of the model to an instance of {::ProtocolBuffers::Message}.
+        # 
+        # @param options {Hash}.  An options hash that is used to configure how
+        #                         The rendering is performed.
+        # @return {::ProtocolBuffers::Message}.  A representation of the model as a {::ProtocolBuffers::Message}.
+        def as_protobuf(options = {})
+          self.class.protobuf_model.new(self.values)
+        end
       end
 
       module DatasetMethods
