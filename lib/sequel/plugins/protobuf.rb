@@ -96,7 +96,15 @@ module Sequel
         #                         The rendering is performed.
         # @return {::ProtocolBuffers::Message}.  A representation of the model as a {::ProtocolBuffers::Message}.
         def as_protobuf(options = {})
-          self.class.protobuf_model.new(self.values)
+          attributes = self.values.inject({}) do |acc, (k, v)|
+            if self.class.protobuf_model.respond_to?("#{k}=".to_sym)
+              acc[k] = v
+            end
+            
+            acc
+          end
+          
+          return self.class.protobuf_model.new(attributes)
         end
       end
 
