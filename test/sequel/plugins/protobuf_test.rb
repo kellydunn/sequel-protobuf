@@ -54,7 +54,9 @@ class ProtobufTest < Minitest::Test
       acc
     end
 
-    assert_equal res.sort, expected.keys.sort
+    assert_equal 1, proto.id
+    assert_equal "test", proto.myField
+    assert !proto.respond_to?(:extraField), "Expects protobuf model to not respond to a field that is not defined"
   end
 
   def test_dataset_to_protobuf
