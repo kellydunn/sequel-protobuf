@@ -55,7 +55,9 @@ module Sequel
         }
       end
       
-      
+
+      # When mixed in, this module provides the ability for objects 
+      # to be serialized from protocol buffer strings
       module ClassMethods
         attr_reader :protobuf_driver, :protobuf_model
 
@@ -79,7 +81,11 @@ module Sequel
         end
       end
 
+      # When mixed in, this module provides various instance-level methods that
+      # allow sequel models to be rendered into protocol buffers
+      # or rendered into a driver-specific model 
       module InstanceMethods
+
         # Renders the current instance of the model to a protocol buffer message
         # as it is defined in the configured protocol buffer model definition.
         #
@@ -89,9 +95,34 @@ module Sequel
         def to_protobuf(options = {})
           self.class.protobuf_driver.serialize(self.class.protobuf_model, self.values, options)
         end
+
+        # Renders the current instance of the model to an instance of {::ProtocolBuffers::Message}.
+        # 
+        # @param options {Hash}.  An options hash that is used to configure how
+        #                         The rendering is performed.
+        # @return {Object}.  A representation of the model as an instance of the protocol_buffer model class
+        #                    configured at the instance level.
+        def as_protobuf(options = {})
+          fields = self.class.protobuf_model.fields.inject([]) do |acc, (k, v) |
+            acc << v.name
+            acc
+          end
+
+          attributes = self.values.inject({}) do |acc, (k, v)|
+            if fields.include?(k)
+              acc[k] = v
+            end
+            acc
+          end
+          
+          return self.class.protobuf_driver.create(self.class.protobuf_model, attributes)
+        end
       end
 
+      # When mixed in, this module provides the ability for Sequel datasets to 
+      # call `to_protobuf`, which will return an array of serialized protobuf strings.
       module DatasetMethods
+
         # Renders the current dataset of the model into a collection of 
         # protocol buffer messages as they are defined in the configured
         # protocol buffer model definition.
