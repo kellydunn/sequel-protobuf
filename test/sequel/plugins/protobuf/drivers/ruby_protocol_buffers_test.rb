@@ -9,6 +9,13 @@ class RubyProtocolBuffersDriverTest < Minitest::Test
     assert_equal("\b\x01\x12\x04test", res)
   end
 
+  # Ensures that the return type of the create method is that of the passed in protobuf model
+  def test_create
+    d = Sequel::Plugins::Protobuf::DRIVERS[:ruby_protocol_buffers]
+    res = d.create(::Test::MyMessage, {:id => 1, :myField => "test"})
+    assert_equal(res.class, ::Test::MyMessage)
+  end
+
   # Ensures that result of serialize can read with the driver's call to `parse`
   # Also ensures that a successful parse will result in a new protobuf model
   # with the expected fields

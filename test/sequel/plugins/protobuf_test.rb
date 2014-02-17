@@ -39,6 +39,26 @@ class ProtobufTest < Minitest::Test
     assert_equal m.class, MyMessageSequelModel
   end
 
+  def test_as_protobuf
+    require 'test/helpers/my_message_sequel_model'
+
+    attributes = {:myField => "test", :extraField => "extra"}
+    m = MyMessageSequelModel.create(attributes)
+    proto = m.as_protobuf
+
+    attributes.delete(:extraField)
+    expected = attributes.merge({:id => m.id})
+
+    res = proto.fields.inject([]) do |acc, (k, v)|
+      acc << v.name
+      acc
+    end
+
+    assert_equal 1, proto.id
+    assert_equal "test", proto.myField
+    assert !proto.respond_to?(:extraField), "Expects protobuf model to not respond to a field that is not defined"
+  end
+
   def test_dataset_to_protobuf
     require 'test/helpers/my_message_sequel_model'
 
