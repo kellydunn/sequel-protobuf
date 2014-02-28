@@ -93,7 +93,40 @@ module Sequel
         #                        the rendering is performed.
         # @return {String}. A protocol buffer representation of the current {Sequel::Model} instance.
         def to_protobuf(options = {})
-          self.class.protobuf_driver.serialize(self.class.protobuf_model, self.values, options)
+          return self.to_protobuf_helper(self, options).to_s
+        end
+
+        def to_protobuf_helper(current, options={})
+          if current.is_a?(Array)
+            collection = current.inject([]) do |acc, element|
+              acc << to_protobuf_helper(element, options) 
+              acc
+            end
+
+            return collection
+
+          else
+            values = current.values
+            
+            # If the options do not specifiy a protobuf model, assume the one configured earlier
+            if !options.has_key?(:as)
+              model = current.class.protobuf_model
+              
+              # Otherwise, use the configured model
+            else
+              model = options[:as]
+            end
+            
+            options.each do |k, v|
+              if k == :include
+                v.each do |model, opts|
+                  values.merge!({model => to_protobuf_helper(current.send(model.to_sym), opts)})
+                end
+              end
+            end
+            
+            return current.class.protobuf_driver.create(model, values)
+          end
         end
 
         # Renders the current instance of the model to an instance of {::ProtocolBuffers::Message}.
