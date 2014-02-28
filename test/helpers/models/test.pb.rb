@@ -6,12 +6,29 @@ require 'protocol_buffers'
 module Test
   # forward declarations
   class MyMessage < ::ProtocolBuffers::Message; end
+  class MyMessageWithNested < ::ProtocolBuffers::Message; end
+  class Nested < ::ProtocolBuffers::Message; end
 
   class MyMessage < ::ProtocolBuffers::Message
     set_fully_qualified_name "Test.MyMessage"
 
     required :int64, :id, 1
     optional :string, :myField, 2
+  end
+
+  class MyMessageWithNested < ::ProtocolBuffers::Message
+    set_fully_qualified_name "Test.MyMessageWithNested"
+
+    required :int64, :id, 1
+    optional :string, :myField, 2
+    repeated ::Test::Nested, :nested, 3
+  end
+
+  class Nested < ::ProtocolBuffers::Message
+    set_fully_qualified_name "Test.Nested"
+
+    required :int64, :id, 1
+    optional :string, :nestedField, 2
   end
 
 end
