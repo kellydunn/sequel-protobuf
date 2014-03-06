@@ -52,6 +52,8 @@ module Sequel
           
           driver = options[:driver] ? options[:driver] : DEFAULT_DRIVER
           @protobuf_driver = DRIVERS[driver]
+
+          @coerce_time_to_epoch_seconds = options[:coerce_time_to_epoch_seconds]
         }
       end
       
@@ -143,7 +145,13 @@ module Sequel
 
           attributes = self.values.inject({}) do |acc, (k, v)|
             if fields.include?(k)
-              acc[k] = v
+              value = v
+
+              if value.is_a?(Time) && @coerce_time_to_epoc_seconds 
+                value = value.to_i
+              end
+
+              acc[k] = value
             end
             acc
           end
