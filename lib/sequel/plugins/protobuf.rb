@@ -52,7 +52,7 @@ module Sequel
           
           driver = options[:driver] ? options[:driver] : DEFAULT_DRIVER
           @protobuf_driver = DRIVERS[driver]
-          @protobuf_driver.configure!({:coerce_time_to_unix_timestamp => @corece_time_to_unix_timestamp})
+          @protobuf_driver.configure!({:coerce_time_to_unix_timestamp => options[:coerce_time_to_unix_timestamp]})
         }
       end
       
