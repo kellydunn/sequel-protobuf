@@ -123,6 +123,10 @@ module Sequel
                 v.each do |model, opts|
                   values.merge!({model => to_protobuf_helper(current.send(model.to_sym), opts)})
                 end
+              elsif k == :coerce
+                v.each do |value, proc|
+                  values[value] = proc.call(values[value])
+                end
               end
             end
             
