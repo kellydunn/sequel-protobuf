@@ -53,7 +53,7 @@ module Sequel
           driver = options[:driver] ? options[:driver] : DEFAULT_DRIVER
           @protobuf_driver = DRIVERS[driver]
 
-          @coerce_time_to_epoch_seconds = options[:coerce_time_to_epoch_seconds]
+          @coerce_time_to_unix_timestamp = options[:coerce_time_to_unix_timestamp]
         }
       end
       
@@ -147,7 +147,7 @@ module Sequel
             if fields.include?(k)
               value = v
 
-              if value.is_a?(Time) && @coerce_time_to_epoc_seconds 
+              if value.is_a?(Time) && @coerce_time_to_unix_timestamp
                 value = value.to_i
               end
 
