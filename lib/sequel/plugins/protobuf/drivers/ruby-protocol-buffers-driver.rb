@@ -23,7 +23,6 @@ module Sequel
 
           def self.configure!(options)
             @@config.merge!(options)
-            puts @@config
           end
           
           # Serializes the passed in attributes hash into an instance of the passed in
@@ -44,7 +43,7 @@ module Sequel
             
             attributes = attributes.inject({}) do |acc, (k, v)| 
               if fields.include?(k)
-                if v.is_a?(Time) && @@config[:corece_time_to_unix_timestamp]
+                if v.is_a?(Time) && @@config[:coerce_time_to_unix_timestamp]
                   acc[k] = v.to_i
                 else
                   acc[k] = v
