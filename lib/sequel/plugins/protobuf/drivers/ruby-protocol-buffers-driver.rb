@@ -23,6 +23,7 @@ module Sequel
 
           def self.configure!(options)
             @@config.merge!(options)
+            puts @@config
           end
           
           # Serializes the passed in attributes hash into an instance of the passed in
