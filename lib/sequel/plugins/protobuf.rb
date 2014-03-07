@@ -52,8 +52,7 @@ module Sequel
           
           driver = options[:driver] ? options[:driver] : DEFAULT_DRIVER
           @protobuf_driver = DRIVERS[driver]
-
-          @coerce_time_to_unix_timestamp = options[:coerce_time_to_unix_timestamp]
+          @protobuf_driver.configure!({:coerce_time_to_unix_timestamp => @corece_time_to_unix_timestamp})
         }
       end
       
@@ -146,11 +145,6 @@ module Sequel
           attributes = self.values.inject({}) do |acc, (k, v)|
             if fields.include?(k)
               value = v
-
-              if value.is_a?(Time) && @coerce_time_to_unix_timestamp
-                value = value.to_i
-              end
-
               acc[k] = value
             end
             acc

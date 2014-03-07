@@ -8,7 +8,9 @@ module Sequel
         # This driver definition provides a standard interface
         # for protocol buffer serialization with the `ruby-protocol-buffers` gem.
         module RubyProtocolBuffers
-             
+          
+          @@config = {}
+          
           # Parses the passed in protobuf message into 
           # an instance of the corresponding protocol buffer model definition
           #
@@ -17,6 +19,10 @@ module Sequel
           # @param options {Hash}.  An options hash to help configure the parsing functionality.
           def self.parse(protobuf_model, protobuf, options = {})
             return protobuf_model.send(:parse, protobuf)
+          end
+
+          def self.configure!(options)
+            @@config.merge!(options)
           end
           
           # Serializes the passed in attributes hash into an instance of the passed in
@@ -35,8 +41,16 @@ module Sequel
               acc
             end
             
-            attributes.reject! do |item| 
-              !fields.include?(item)
+            attributes = attributes.inject({}) do |acc, (k, v)| 
+              if fields.include?(k)
+                if v.is_a?(Time) && @@config[:corece_time_to_unix_timestamp]
+                  acc[k] = v.to_i
+                else
+                  acc[k] = v
+                end
+              end
+
+              acc
             end
             
             return protobuf_model.send(:new, attributes)
