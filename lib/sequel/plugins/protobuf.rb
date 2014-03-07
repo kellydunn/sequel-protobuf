@@ -133,8 +133,10 @@ module Sequel
                 v.each do |model, opts|
                   values.merge!({model => render(current.send(model.to_sym), opts)})
                 end
+
               elsif k == :coerce
                 v.each do |value, proc|
+                  puts values.inspect
                   values[value] = proc.call(values[value])
                 end
               end
