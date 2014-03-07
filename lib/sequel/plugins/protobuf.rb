@@ -94,13 +94,23 @@ module Sequel
         #                        the rendering is performed.
         # @return {String}. A protocol buffer representation of the current {Sequel::Model} instance.
         def to_protobuf(options = {})
-          return self.to_protobuf_helper(self, options).to_s
+          return self.render(self, options).to_s
         end
 
-        def to_protobuf_helper(current, options={})
+        # Renders the current instance of the model to an instance of {::ProtocolBuffers::Message}.
+        # 
+        # @param options {Hash}.  An options hash that is used to configure how
+        #                         The rendering is performed.
+        # @return {Object}.  A representation of the model as an instance of the protocol_buffer model class
+        #                    configured at the instance level.
+        def as_protobuf(options = {})
+          return self.render(self, options)
+        end
+
+        def render(current, options={})
           if current.is_a?(Array)
             collection = current.inject([]) do |acc, element|
-              acc << to_protobuf_helper(element, options) 
+              acc << render(element, options) 
               acc
             end
 
@@ -121,7 +131,7 @@ module Sequel
             options.each do |k, v|
               if k == :include
                 v.each do |model, opts|
-                  values.merge!({model => to_protobuf_helper(current.send(model.to_sym), opts)})
+                  values.merge!({model => render(current.send(model.to_sym), opts)})
                 end
               elsif k == :coerce
                 v.each do |value, proc|
@@ -134,28 +144,6 @@ module Sequel
           end
         end
 
-        # Renders the current instance of the model to an instance of {::ProtocolBuffers::Message}.
-        # 
-        # @param options {Hash}.  An options hash that is used to configure how
-        #                         The rendering is performed.
-        # @return {Object}.  A representation of the model as an instance of the protocol_buffer model class
-        #                    configured at the instance level.
-        def as_protobuf(options = {})
-          fields = self.class.protobuf_model.fields.inject([]) do |acc, (k, v) |
-            acc << v.name
-            acc
-          end
-
-          attributes = self.values.inject({}) do |acc, (k, v)|
-            if fields.include?(k)
-              value = v
-              acc[k] = value
-            end
-            acc
-          end
-          
-          return self.class.protobuf_driver.create(self.class.protobuf_model, attributes)
-        end
       end
 
       # When mixed in, this module provides the ability for Sequel datasets to 
