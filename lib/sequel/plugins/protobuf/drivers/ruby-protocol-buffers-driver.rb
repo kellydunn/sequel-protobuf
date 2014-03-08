@@ -9,8 +9,6 @@ module Sequel
         # for protocol buffer serialization with the `ruby-protocol-buffers` gem.
         module RubyProtocolBuffers
           
-          @@config = {}
-          
           # Parses the passed in protobuf message into 
           # an instance of the corresponding protocol buffer model definition
           #
@@ -21,10 +19,6 @@ module Sequel
             return protobuf_model.send(:parse, protobuf)
           end
 
-          def self.configure!(options)
-            @@config.merge!(options)
-          end
-          
           # Serializes the passed in attributes hash into an instance of the passed in
           # protocol buffer model definition.
           #
@@ -43,11 +37,7 @@ module Sequel
             
             attributes = attributes.inject({}) do |acc, (k, v)| 
               if fields.include?(k)
-                if v.is_a?(Time) && @@config[:coerce_time_to_unix_timestamp]
-                  acc[k] = v.to_i
-                else
-                  acc[k] = v
-                end
+                acc[k] = v
               end
 
               acc
