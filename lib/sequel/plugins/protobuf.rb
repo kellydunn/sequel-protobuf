@@ -136,7 +136,6 @@ module Sequel
 
               elsif k == :coerce
                 v.each do |value, proc|
-                  puts values.inspect
                   values[value] = proc.call(values[value])
                 end
               end
