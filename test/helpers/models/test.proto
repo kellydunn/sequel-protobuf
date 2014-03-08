@@ -4,3 +4,14 @@ message MyMessage {
   required int64 id = 1;
   optional string myField = 2;
 }
+
+message MyMessageWithNested {
+  required int64 id = 1;
+  optional string myField = 2;
+  repeated Nested nested = 3;
+}
+
+message Nested {
+  required int64 id = 1;
+  optional string nestedField = 2;
+}
