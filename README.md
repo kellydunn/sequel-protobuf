@@ -46,13 +46,50 @@ result = MyModel.all.to_protobuf
 # result is an array of protocol buffer representations of each instance of {MyModel}!
 ```
 
+##configuration
+
+As of `0.2.0`, `sequel-protobuf` provides the ability to render nested protocol buffer models, re-format data-types on demand, and override default protocol buffer definitions while rendering.  To do this, you may supply an options hash to the `to_protobuf` and `as_protobuf` methods with any of the following keys:
+
+  - `:include`: specifies nested protocol buffer models to render
+  - `:as`: specifies a different protocol buffer model definition in which to render the current object as
+  - `:coerce`: specifies how to re-format a specific data column of the current `Sequel::Model` such that it can fit your protocol buffer definition.
+
+###Example
+```
+require 'sequel'
+require 'sequel/plugins/protobuf'
+require 'protocol_buffers'
+require 'your/protocol/buffer/definitions/my_model_definition'
+
+class MyModel < Sequel::Model
+  plugin :protobuf, :model => MyModelDefinition
+  one_to_many :nested
+
+  def app_specific_as_protobuf
+    config = {
+      :as => DifferentModelDefinition,
+      :include => {
+        :nested => {}
+      }
+      :coerce => {
+        # We coerce the creatd_at time since Protocol Buffers
+        # do not support Time types by default.
+        # The reccomended approach is to set the unix timestamp value
+        # as a int64 type.
+        :created_at => Proc.new { |created_at|
+          created_at.utc.to_i
+        }
+      }
+    }
+
+    return self.as_protobuf(config)
+  end
+end
+```
+
 ##considerations
 
   - This library currently only supports `ruby-protocol-buffers` as a serialization driver.  If you are interested in adding additional driver support, feel free to open a Pull Request!
-
-##roadmap
-
-  - Serialization of nested models
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/kellydunn/sequel-protobuf/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
