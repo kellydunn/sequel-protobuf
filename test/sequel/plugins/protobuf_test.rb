@@ -70,4 +70,45 @@ class ProtobufTest < Minitest::Test
     assert_equal(res.length, 1)
     assert_equal(res[0], "\b\x01\x12\x04test")    
   end
+
+  def test_to_protobuf_nested_model
+    require 'test/helpers/my_message_sequel_model'
+    require 'test/helpers/nested_sequel_model'
+
+    m = MyMessageSequelModel.create({:myField => "test"})
+    m2 = NestedSequelModel.create({:my_message_id => m.id, :nestedField => "test-nested"})
+
+    m.reload
+    res = m.to_protobuf({ 
+                          :as => ::Test::MyMessageWithNested,
+                          :include => {
+                            :nested => {
+                              :as => ::Test::Nested
+                            }
+                          }
+                        })
+
+    assert_equal(res, "\b\x01\x12\x04test\x1A\x0F\b\x01\x12\vtest-nested")
+    
+  end
+
+  def test_to_protobuf_with_coerced_keys
+    require 'test/helpers/my_message_sequel_model'
+    require 'test/helpers/nested_sequel_model'
+
+    m = MyMessageSequelModel.create({:myField => "test"})
+    m.reload
+ 
+    res = m.to_protobuf({ 
+                          :coerce => {
+                            :myField => Proc.new { |value|
+                              "#{value}-coerced"
+                            }
+                          }
+                        })
+
+    assert_equal("\b\x01\x12\ftest-coerced", res)
+    
+  end
+
 end

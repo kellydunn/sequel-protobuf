@@ -55,7 +55,6 @@ module Sequel
         }
       end
       
-
       # When mixed in, this module provides the ability for objects 
       # to be serialized from protocol buffer strings
       module ClassMethods
@@ -93,7 +92,7 @@ module Sequel
         #                        the rendering is performed.
         # @return {String}. A protocol buffer representation of the current {Sequel::Model} instance.
         def to_protobuf(options = {})
-          self.class.protobuf_driver.serialize(self.class.protobuf_model, self.values, options)
+          return self.render(self, options).to_s
         end
 
         # Renders the current instance of the model to an instance of {::ProtocolBuffers::Message}.
@@ -103,20 +102,67 @@ module Sequel
         # @return {Object}.  A representation of the model as an instance of the protocol_buffer model class
         #                    configured at the instance level.
         def as_protobuf(options = {})
-          fields = self.class.protobuf_model.fields.inject([]) do |acc, (k, v) |
-            acc << v.name
-            acc
-          end
-
-          attributes = self.values.inject({}) do |acc, (k, v)|
-            if fields.include?(k)
-              acc[k] = v
-            end
-            acc
-          end
-          
-          return self.class.protobuf_driver.create(self.class.protobuf_model, attributes)
+          return self.render(self, options)
         end
+
+        # Renders the passed in key ans the corresponding protocol buffer model.
+        # The passed in options specifies how to do this with the following rules:
+        #   - `:include`  This key specifies that the current protocol buffer model has a nested
+        #                 Protocol buffer model to be rendered inside of it.
+        #   - `:coerce`   This key specifies that the current model can override a specific data
+        #                 value of a particular database column.  This is useful fo re-formatting
+        #                 data from your db schema so that they adhere to your protocol 
+        #                 buffer definitions.
+        #   - `:as`       This key specifies a different protocol buffer model to render the
+        #                 current object.
+        #
+        # @param current {Object}.  The current seciton of the schema to render.
+        # @param options {Hash}.  An options hash to configure how to render the current object.
+        def render(current, options={})
+
+          # If the current element in the schema is an array, 
+          # then we need to render them in sequence and return the result.
+          if current.is_a?(Array)
+            collection = current.inject([]) do |acc, element|
+              acc << render(element, options) 
+              acc
+            end
+
+            return collection
+
+          # Otherwise, get the current values of the object and process them accordingly.
+          else
+            values = current.values
+            
+            # If the options do not specifiy a protobuf model, assume the one configured earlier
+            if options.has_key?(:as) 
+              model = options[:as]
+            else
+              model = current.class.protobuf_model
+            end
+            
+            options.each do |k, v|
+              
+              # If the current key is "include", then recursively render the model specified
+              if k == :include
+                v.each do |model, opts|
+                  values.merge!({model => render(current.send(model.to_sym), opts)})
+                end
+
+              # If the current key is "coerce", then call the corresponding proc
+              # for the desired attribute
+              elsif k == :coerce
+                v.each do |value, proc|
+                  values[value] = proc.call(values[value])
+                end
+              end
+            end
+            
+            # Finally, return the result of creating a new protobuf model
+            return current.class.protobuf_driver.create(model, values)
+          end
+        end
+
       end
 
       # When mixed in, this module provides the ability for Sequel datasets to 
