@@ -111,4 +111,25 @@ class ProtobufTest < Minitest::Test
     
   end
 
+  # Ensures that coercing the values of a sequel model
+  # does not mutate the values hash of that particular instance.
+  def test_values_retention_after_rendering_with_coercion
+    require 'test/helpers/my_message_sequel_model'
+    require 'test/helpers/nested_sequel_model'
+
+    m = MyMessageSequelModel.create({:myField => "test"})
+    m.reload
+ 
+    res = m.to_protobuf({ 
+                          :coerce => {
+                            :myField => Proc.new { |value|
+                              "#{value}-coerced"
+                            }
+                          }
+                        })
+
+    assert_equal("\b\x01\x12\ftest-coerced", res)    
+    assert_equal("test", m.values[:myField])
+  end
+
 end
