@@ -132,7 +132,7 @@ module Sequel
 
           # Otherwise, get the current values of the object and process them accordingly.
           else
-            values = current.values
+            values = current.values.dup
             
             # If the options do not specifiy a protobuf model, assume the one configured earlier
             if options.has_key?(:as) 
