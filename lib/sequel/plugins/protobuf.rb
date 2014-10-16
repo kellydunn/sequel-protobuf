@@ -130,8 +130,9 @@ module Sequel
 
             return collection
 
-          # Otherwise, get the current values of the object and process them accordingly.
-          else
+          # Otherwise, if the record isn't nil, 
+          # we get the current values of the object and process them accordingly.
+          elsif !current.nil?
             values = current.values.dup
             
             # If the options do not specifiy a protobuf model, assume the one configured earlier
